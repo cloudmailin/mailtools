@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "rubygems"
+require "bundler/setup"
+Bundler.require :default
+require 'securerandom'
+
+$LOAD_PATH << File.expand_path('../../lib', __FILE__)
+require 'mailer'
+
+class Runner < Thor
+  class_option :host, type: :string, default: ENV['SMTP_HOST'] || 'localhost'
+  class_option :port, type: :numeric, default: (ENV['SMTP_POST'] || 587).to_i
+  class_option :username, type: :string, default: ENV['SMTP_USERNAME']
+  class_option :password, type: :string, default: ENV['SMTP_PASSWORD']
+  class_option :smtp_url, type: :string, default: ENV['SMTP_URL']
+
+  desc "send", "Send test messages"
+  option :from, type: :string, default: "CLI <cli@smtp>"
+  option :to, type: :string, default: "Debug <debug@smtp>"
+  option :cc, type: :string
+  option :bcc, type: :string
+  option :times, type: :numeric, default: 1
+  option :concurrency, type: :numeric, default: 5
+  option :class, type: :string
+  option :verbose, type: :boolean, default: false
+  option :data, type: :string
+  option :headers, type: :array
+  def send
+    new_options = check_header_arg
+    warn "Calling with new_options.inspect"
+    Mailer.new(new_options).send
+  end
+
+  def self.exit_on_failure?
+    true
+  end
+
+  protected
+
+  def check_header_arg
+    options_dup = options.dup
+    if options['headers']
+      header_array = options['headers'].map do |header|
+        header.split(/[=:]{1}/).tap do |h|
+          if h.size != 2
+            self.class.command_help(shell, :test)
+            raise Thor::Error, "\nInvalid header: #{h}"
+          end
+        end
+      end
+      options_dup[:headers] = Hash[*header_array.flatten]
+    end
+    options_dup
+  end
+end
+
+Runner.start(ARGV)

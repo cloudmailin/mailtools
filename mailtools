@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Set DIR to the directory of the script to allow running from any directory
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+docker build $DIR -f "$DIR/Dockerfile" -t mailtools > "$DIR/log/build.log" 2>&1
+
+# Needs to map the current directory as data in order to help call examples
+docker run -t -i --rm -v `pwd`:/data -v "$DIR:/cli" mailtools $@
