@@ -57,3 +57,6 @@ build-iPhoneSimulator/
 
 # Ignore examples directory
 examples/
+
+# Ignore build log
+log/build.log
