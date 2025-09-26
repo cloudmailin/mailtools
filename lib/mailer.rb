@@ -26,7 +26,7 @@ class Mailer
         to       mail_to
         subject  "Test #{Time.now}"
         html_part  do
-          body "html"
+          body "<html><body><h1>Test Message</h1><p><a href='https://www.cloudmailin.com'>CloudMailin</a></p></body></html>"
         end
         text_part do
           body "Test Message\nhttps://www.cloudmailin.com"
