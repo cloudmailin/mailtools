@@ -39,6 +39,8 @@ Options:
                                # Default: false
   [--data=DATA]
   [--headers=one two three]
+  [--exit-on-error], [--no-exit-on-error]
+                               # Default: false
   [--host=HOST]
                                # Default: localhost
   [--port=N]

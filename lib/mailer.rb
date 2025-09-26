@@ -82,7 +82,7 @@ class Mailer
     # pool.wait_for_termination
     while pool.completed_task_count < times
       STDERR.write('.')
-      exit 1 if error_count > 0
+      exit 1 if error_count > 0 && options[:exit_on_error]
       sleep(1)
     end
   end

@@ -27,6 +27,7 @@ class Runner < Thor
   option :verbose, type: :boolean, default: false
   option :data, type: :string
   option :headers, type: :array
+  option :exit_on_error, type: :boolean, default: false
   def send
     new_options = check_header_arg
     warn "Calling with new_options.inspect"
